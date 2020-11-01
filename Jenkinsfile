@@ -25,24 +25,6 @@ pipeline {
                     }
               }
 
-
-         stage('Run Static Analysis with SonarQ') {
-                    steps {
-                    script{
-                        withSonarQubeEnv('sonarserver') {
-                                             bat "mvn sonar:sonar"
-                                            }
-                                   //         timeout(time: 1, unit: 'HOURS'){
-                                     //       def qg = waitForQualityGate()
-                                         //       if(qg.status != 'OK'){
-                                            //    error "Pipeline aborted due to Quality gate failure: ${qg.status}"
-                                           //     }
-                                         //   }
-
-                    }
-
-                    }
-              }
                       stage('Update DATA') {
                             steps {
                             script {
@@ -66,6 +48,24 @@ pipeline {
                                 }
                                 }
                            }
+
+                           stage('Run Static Analysis with SonarQ') {
+                                               steps {
+                                               script{
+                                                   withSonarQubeEnv('sonarserver') {
+                                                                        bat "mvn sonar:sonar"
+                                                                       }
+                                                              //         timeout(time: 1, unit: 'HOURS'){
+                                                                //       def qg = waitForQualityGate()
+                                                                    //       if(qg.status != 'OK'){
+                                                                       //    error "Pipeline aborted due to Quality gate failure: ${qg.status}"
+                                                                      //     }
+                                                                    //   }
+
+                                               }
+
+                                               }
+                                         }
        /*   stage('Running the Test') {
                              steps {
                                 bat "${userInputTxt}"
