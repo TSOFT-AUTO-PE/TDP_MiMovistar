@@ -71,7 +71,6 @@ pipeline {
                                 bat "${userInputTxt}"
                              }
                        }*/
-
         stage('Archive Results WORD') {
             steps {
             archiveArtifacts 'target/resultado/*.docx'
