@@ -13,6 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -129,9 +130,10 @@ public class ExcelReader {
         return mydata;
     }
 
-    public static void writeCellValue(String rutaRelativaExcel, String sheetName, int rowNumber, int cellNumber, String resultText) {
+    public static void writeCellValue(String rutaRelativaExcel, String sheetName, int rowNumber, int cellNumber, String resultText) throws IOException {
 
         FileInputStream fs = null;
+        XSSFWorkbook newWorkbook = null;
 
         try {
 
@@ -143,7 +145,7 @@ public class ExcelReader {
 
             fs = new FileInputStream(rutaFile);
 
-            XSSFWorkbook newWorkbook = new XSSFWorkbook(fs);
+            newWorkbook = new XSSFWorkbook(fs);
 
             XSSFSheet newSheet = newWorkbook.getSheet(sheetName);
 
@@ -174,6 +176,13 @@ public class ExcelReader {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+        finally {
+
+            IOUtils.closeQuietly(fs);
+            assert newWorkbook != null;
+            newWorkbook.close();
+        }
+
     }
 
 }
