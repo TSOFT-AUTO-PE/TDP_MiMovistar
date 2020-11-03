@@ -3,6 +3,7 @@
 */
 package com.tsoft.bot.frontend.utility;
 
+
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
@@ -16,11 +17,13 @@ import org.openqa.selenium.WebDriver;
 import org.sikuli.script.Screen;
 import org.sikuli.script.ScreenImage;
 
+
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
 
 public class GenerateWord {
 
@@ -68,34 +71,28 @@ public class GenerateWord {
         run.addBreak();
     }
 
-    private void copyExistentWord(File file) throws IOException {
-
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
+    public void copyExistentWord(File file) throws IOException {
+        InputStream input = null;
+        OutputStream output = null;
         try {
-
-            File fileUnique = new File(file.getPath());
-            File copyFile = new File(WORD_NAME_STANDAR);
-            inputStream = new FileInputStream(fileUnique);
-            outputStream = new FileOutputStream(copyFile);
-            byte[] buffer = new byte[1024];
+        File fileUnique = new File(file.getPath());
+        File copyFile = new File(WORD_NAME_STANDAR);
+        input = new FileInputStream(fileUnique);
+        output = new FileOutputStream(copyFile);
+        byte[] buffer = new byte[1024];
             int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
+            while ((length = input.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
             }
-
-        } catch (IOException r) {
-            r.printStackTrace();
-        }
-        finally {
-            if (inputStream != null && outputStream != null) {
-                inputStream.close();
-            } else {
-                assert false;
-                outputStream.close();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            if (input != null&&output != null) {
+                output.close() ;input.close();
         }
     }
+    }
+
 
     public void addImageToWord(WebDriver driver) throws IOException {
         InputStream inputStream = null;
