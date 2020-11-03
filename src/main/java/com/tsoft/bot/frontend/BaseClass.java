@@ -21,7 +21,6 @@ public class BaseClass {
         try {
 
             switch (key.toLowerCase()) {
-
                 case "id":
                     new WebDriverWait(driver, 20, 40).until(ExpectedConditions.presenceOfElementLocated(By.id(locator))).click();
                     break;
@@ -41,6 +40,9 @@ public class BaseClass {
                 case "xpath":
                     new WebDriverWait(driver, 20, 40).until(ExpectedConditions.presenceOfElementLocated(By.xpath(locator))).click();
                     break;
+
+                    default:
+                        break;
             }
 
         } catch (Throwable t) {

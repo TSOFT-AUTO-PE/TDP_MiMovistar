@@ -4,6 +4,7 @@
 package com.tsoft.bot.frontend.utility;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -29,39 +30,32 @@ public class GenerateWord {
     private static final String FILE_PATH_STANDAR = FileHelper.getProjectFolder() + "/target/resultado/";
 
     private String TEMP_WORD_FILE;
-    public static XWPFDocument document;
-    public static XWPFParagraph paragraph;
-    public static XWPFRun run;
-    public static FileOutputStream fileOutputStream;
+    private static XWPFDocument document;
+    private static XWPFParagraph paragraph;
+    private static XWPFRun run;
+    private static FileOutputStream fileOutputStream;
 
 
-    public void startUpWord(String name) {
 
+    public void startUpWord(String name) throws IOException {
+        InputStream insertTemplate = null;
         try {
             File fileUnique = new File(FileHelper.getProjectFolder() + PATH_RELATIVE_WORD);
-
             copyExistentWord(fileUnique);
-
             document = new XWPFDocument();
-
             paragraph = document.createParagraph();
-
             run = paragraph.createRun();
-
             String carpeta = FILE_PATH_STANDAR;
-
             FileUtils.forceMkdir(new File(carpeta));
-
             TEMP_WORD_FILE = FileUtils.getFile(carpeta) + "/" + name + "-" + generarSecuencia() + ".docx";
             fileOutputStream = new FileOutputStream(FileUtils.getFile(carpeta) + "/" + name + "-" + generarSecuencia() + ".docx");
-
-            InputStream insertTemplate = new FileInputStream(FileHelper.getProjectFolder() + TEMPLATE);
-
+            insertTemplate = new FileInputStream(FileHelper.getProjectFolder() + TEMPLATE);
             run.addPicture(insertTemplate, Document.PICTURE_TYPE_PNG, "1", Units.toEMU(440), Units.toEMU(740));
-
             run.addBreak();
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            if (insertTemplate != null) insertTemplate.close();
         }
         System.out.println("[LOG] Word generado");
     }
@@ -70,82 +64,76 @@ public class GenerateWord {
         run.addBreak();
     }
 
-    public void copyExistentWord(File file) {
+    private void copyExistentWord(File file) throws IOException {
 
-        InputStream inputStream;
-
-        OutputStream outputStream;
-
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
         try {
 
             File fileUnique = new File(file.getPath());
-
             File copyFile = new File(WORD_NAME_STANDAR);
-
             inputStream = new FileInputStream(fileUnique);
-
             outputStream = new FileOutputStream(copyFile);
-
             byte[] buffer = new byte[1024];
-
             int length;
-
             while ((length = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
             }
 
-            inputStream.close();
-
-            outputStream.close();
-
         } catch (IOException r) {
-
             r.printStackTrace();
-
+        }
+        finally {
+            assert outputStream != null;
+            outputStream.close();
+            if (inputStream != null) inputStream.close();
         }
     }
 
-    public void addImageToWord(WebDriver driver) {
-
+    public void addImageToWord(WebDriver driver) throws IOException {
+        InputStream inputStream = null;
         try {
 
             TakesScreenshot screenshot = ((TakesScreenshot) driver);
 
             File source = screenshot.getScreenshotAs(OutputType.FILE);
 
-            InputStream inputStream = new FileInputStream(source);
+            inputStream = new FileInputStream(source);
 
             run.addPicture(inputStream, Document.PICTURE_TYPE_PNG, "1", Units.toEMU(465), Units.toEMU(200));
 
             run.addBreak();
 
-        } catch (Exception e) {
+        } catch (IOException | InvalidFormatException ex) {
 
-            e.printStackTrace();
-
+            ex.printStackTrace();
+        }finally {
+            if (inputStream != null) inputStream.close();
         }
 
     }
 
 
-    public void addImageToWord(Screen screen) {
-
+    public void addImageToWord(Screen screen) throws IOException {
+        InputStream inputStream = null;
         try {
 
             ScreenImage screenshot = (screen.capture());
 
             File source = new File(screenshot.getFile());
 
-            InputStream inputStream = new FileInputStream(source);
+            inputStream = new FileInputStream(source);
 
             run.addPicture(inputStream, Document.PICTURE_TYPE_PNG, "1", Units.toEMU(465), Units.toEMU(200));
-
             run.addBreak();
 
         } catch (Exception e) {
 
             e.printStackTrace();
 
+        }finally {
+
+            if (inputStream != null) inputStream.close();
         }
 
     }
@@ -191,6 +179,9 @@ public class GenerateWord {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        }
+        finally {
+            System.out.println("");
         }
         System.out.println("[LOG] Word cerrado");
     }
