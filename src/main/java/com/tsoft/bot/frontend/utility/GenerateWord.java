@@ -88,8 +88,6 @@ public class GenerateWord {
             r.printStackTrace();
         }
         finally {
-            assert outputStream != null;
-            outputStream.close();
             if (inputStream != null) inputStream.close();
         }
     }
