@@ -25,6 +25,7 @@ public class ExcelReader {
         List<HashMap<String, String>> mydata = new ArrayList<>();
 
         FileInputStream fs = null;
+        XSSFWorkbook workbook = null;
 
         try {
 
@@ -36,7 +37,7 @@ public class ExcelReader {
 
             fs = new FileInputStream(rutaFile);
 
-            XSSFWorkbook workbook = new XSSFWorkbook(fs);
+            workbook = new XSSFWorkbook(fs);
 
             XSSFSheet sheet = workbook.getSheet(nombreHoja);
 
@@ -121,6 +122,8 @@ public class ExcelReader {
         } finally {
 
             IOUtils.closeQuietly(fs);
+            assert workbook != null;
+            workbook.close();
         }
 
         return mydata;

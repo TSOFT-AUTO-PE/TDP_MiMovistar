@@ -28,12 +28,15 @@ public class GenerateWord {
     private static final String TEMPLATE = "/src/main/resources/template/Plantila.png";
     private static final String WORD_NAME_STANDAR = "Evidencia.docx";
     private static final String FILE_PATH_STANDAR = FileHelper.getProjectFolder() + "/target/resultado/";
+    private static final String H_ZONE = "America/Bogota";
+    private static final String WORD_EXTENSION = ".docx";
 
     private String TEMP_WORD_FILE;
     private static XWPFDocument document;
     private static XWPFParagraph paragraph;
     private static XWPFRun run;
     private static FileOutputStream fileOutputStream;
+
 
 
 
@@ -47,8 +50,8 @@ public class GenerateWord {
             run = paragraph.createRun();
             String carpeta = FILE_PATH_STANDAR;
             FileUtils.forceMkdir(new File(carpeta));
-            TEMP_WORD_FILE = FileUtils.getFile(carpeta) + "/" + name + "-" + generarSecuencia() + ".docx";
-            fileOutputStream = new FileOutputStream(FileUtils.getFile(carpeta) + "/" + name + "-" + generarSecuencia() + ".docx");
+            TEMP_WORD_FILE = FileUtils.getFile(carpeta) + "/" + name + "-" + generarSecuencia() + WORD_EXTENSION;
+            fileOutputStream = new FileOutputStream(FileUtils.getFile(carpeta) + "/" + name + "-" + generarSecuencia() + WORD_EXTENSION);
             insertTemplate = new FileInputStream(FileHelper.getProjectFolder() + TEMPLATE);
             run.addPicture(insertTemplate, Document.PICTURE_TYPE_PNG, "1", Units.toEMU(440), Units.toEMU(740));
             run.addBreak();
@@ -57,6 +60,7 @@ public class GenerateWord {
         }finally {
             if (insertTemplate != null) insertTemplate.close();
         }
+
         System.out.println("[LOG] Word generado");
     }
 
@@ -158,7 +162,7 @@ public class GenerateWord {
 
             document.write(fileOutputStream);
 
-            File fileWithNewName = new File(TEMP_WORD_FILE.split("\\.docx")[0] + "-" + status.toUpperCase() + ".docx");
+            File fileWithNewName = new File(TEMP_WORD_FILE.split("\\.docx")[0] + "-" + status.toUpperCase() + WORD_EXTENSION);
 
             if (new File(TEMP_WORD_FILE).renameTo(fileWithNewName)) {
 
@@ -190,7 +194,7 @@ public class GenerateWord {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss");
 
-        df.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+        df.setTimeZone(TimeZone.getTimeZone(H_ZONE));
 
         return df.format(new Date());
 
@@ -200,7 +204,7 @@ public class GenerateWord {
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
-        df.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+        df.setTimeZone(TimeZone.getTimeZone(H_ZONE));
 
         return df.format(new Date());
 
@@ -208,7 +212,7 @@ public class GenerateWord {
 
     private static String generarHora() {
         DateFormat df = new SimpleDateFormat("hh:mm:ss");
-        df.setTimeZone(TimeZone.getTimeZone("America/Bogota"));
+        df.setTimeZone(TimeZone.getTimeZone(H_ZONE));
 
         return df.format(new Date());
     }
